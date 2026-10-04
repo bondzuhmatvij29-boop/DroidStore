@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DroidStore</title>
+    <style>
+        body { 
+            font-family: Roboto, sans-serif; 
+            background: #e0e0e0; 
+            color: #000; 
+            margin: 0; 
+            padding: 10px; 
+        }
+        .header { 
+            background: #333; 
+            color: white; 
+            padding: 12px; 
+            text-align: center; 
+            font-size: 18px; 
+            font-weight: bold; 
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        #listview1 { 
+            background: #ffffff; 
+            border: 1px solid #b0b0b0; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .list-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 15px; 
+            border-bottom: 1px solid #e0e0e0; 
+            background: #fff;
+            transition: background 0.2s;
+        }
+        .list-item:last-child { 
+            border-bottom: none; 
+        }
+        .list-item:hover { 
+            background: #f5f5f5; 
+        }
+        .app-info { 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            padding-right: 10px;
+        }
+        .app-name { 
+            font-size: 15px; 
+            font-weight: bold; 
+            color: #212121; 
+            word-break: break-all; 
+        }
+        .app-size { 
+            font-size: 12px; 
+            color: #757575; 
+            margin-top: 3px; 
+        }
+        .btn-download { 
+            background: #4CAF50; 
+            color: white; 
+            text-decoration: none; 
+            padding: 6px 14px; 
+            border-radius: 3px; 
+            font-size: 13px; 
+            font-weight: bold; 
+            white-space: nowrap; 
+            border: none;
+            cursor: pointer;
+        }
+        .btn-download:active { 
+            background: #388E3C; 
+        }
+        .loading { 
+            text-align: center; 
+            padding: 20px; 
+            color: #666; 
+            font-style: italic; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">📦 DroidStore</div>
+    
+    <!-- Компонент ListView 1 -->
+    <div id="listview1">
+        <div class="loading">Загрузка списка приложений...</div>
+    </div>
+
+    <script>
+        const ARCHIVE_ITEM = "h_20261004"; 
+
+        async function loadArchiveList() {
+            const listView = document.getElementById('listview1');
+            try {
+                let response = await fetch(`https://archive.org/metadata/${ARCHIVE_ITEM}`);
+                let data = await response.json();
+                
+                let files = data.files.filter(file => file.name.endsWith('.apk'));
+                
+                listView.innerHTML = "";
+
+                if (files.length === 0) {
+                    listView.innerHTML = '<div class="loading">В этом архиве пока нет APK-файлов.</div>';
+                    return;
+                }
+
+                files.forEach(file => {
+                    let downloadUrl = `https://archive.org/download/${ARCHIVE_ITEM}/${file.name}`;
+                    let sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+                    let cleanName = file.name.replace('.apk', '').replace(/[_.-]/g, ' ');
+
+                    let item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `
+                        <div class="app-info">
+                            <span class="app-name">${cleanName}</span>
+                            <span class="app-size">${file.name} • ${sizeMb} MB</span>
+                        </div>
+                        <a href="${downloadUrl}" class="btn-download" download>Скачать</a>
+                    `;
+                    listView.appendChild(item);
+                });
+
+            } catch (error) {
+                listView.innerHTML = '<div class="loading" style="color: red;">Ошибка подключения к Internet Archive.</div>';
+                console.error(error);
+            }
+        }
+
+        loadArchiveList();
+    </script>
+
+</body>
+</html>
