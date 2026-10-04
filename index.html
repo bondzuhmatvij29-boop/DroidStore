@@ -1,140 +1,130 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DroidStore</title>
     <style>
-        body { 
-            font-family: Roboto, sans-serif; 
-            background: #e0e0e0; 
-            color: #000; 
-            margin: 0; 
-            padding: 10px; 
+        body {
+            font-family: sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 16px;
         }
-        .header { 
-            background: #333; 
-            color: white; 
-            padding: 12px; 
-            text-align: center; 
-            font-size: 18px; 
-            font-weight: bold; 
-            border-radius: 4px;
-            margin-bottom: 10px;
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            color: #4CAF50;
         }
-        #listview1 { 
-            background: #ffffff; 
-            border: 1px solid #b0b0b0; 
-            border-radius: 4px; 
-            overflow: hidden; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .info-header {
+            text-align: center;
+            font-size: 13px;
+            color: #b0b0b0;
+            margin-bottom: 20px;
         }
-        .list-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 12px 15px; 
-            border-bottom: 1px solid #e0e0e0; 
-            background: #fff;
-            transition: background 0.2s;
+        .list-view-1 {
+            max-width: 600px;
+            margin: 0 auto;
         }
-        .list-item:last-child { 
-            border-bottom: none; 
+        .app-item {
+            background: #1e1e1e;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        .list-item:hover { 
-            background: #f5f5f5; 
+        .app-info {
+            display: flex;
+            flex-direction: column;
         }
-        .app-info { 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden;
-            padding-right: 10px;
+        .app-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
         }
-        .app-name { 
-            font-size: 15px; 
-            font-weight: bold; 
-            color: #212121; 
-            word-break: break-all; 
+        .app-details {
+            font-size: 12px;
+            color: #b0b0b0;
+            margin-top: 4px;
         }
-        .app-size { 
-            font-size: 12px; 
-            color: #757575; 
-            margin-top: 3px; 
-        }
-        .btn-download { 
-            background: #4CAF50; 
-            color: white; 
-            text-decoration: none; 
-            padding: 6px 14px; 
-            border-radius: 3px; 
-            font-size: 13px; 
-            font-weight: bold; 
-            white-space: nowrap; 
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 14px;
             border: none;
-            cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
         }
-        .btn-download:active { 
-            background: #388E3C; 
-        }
-        .loading { 
-            text-align: center; 
-            padding: 20px; 
-            color: #666; 
-            font-style: italic; 
+        .download-btn:active {
+            background-color: #388E3C;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">📦 DroidStore</div>
-    
-    <!-- Компонент ListView 1 -->
-    <div id="listview1">
-        <div class="loading">Загрузка списка приложений...</div>
+    <h1>DroidStore</h1>
+    <div class="info-header">Легкий маркет додатків (обмеження до 35 МБ)</div>
+
+    <div class="list-view-1" id="app-list">
+        <!-- Список додатків завантажується динамічно -->
     </div>
 
     <script>
-        const ARCHIVE_ITEM = "h_20261004"; 
-
-        async function loadArchiveList() {
-            const listView = document.getElementById('listview1');
-            try {
-                let response = await fetch(`https://archive.org/metadata/${ARCHIVE_ITEM}`);
-                let data = await response.json();
-                
-                let files = data.files.filter(file => file.name.endsWith('.apk'));
-                
-                listView.innerHTML = "";
-
-                if (files.length === 0) {
-                    listView.innerHTML = '<div class="loading">В этом архиве пока нет APK-файлов.</div>';
-                    return;
-                }
-
-                files.forEach(file => {
-                    let downloadUrl = `https://archive.org/download/${ARCHIVE_ITEM}/${file.name}`;
-                    let sizeMb = (file.size / (1024 * 1024)).toFixed(2);
-                    let cleanName = file.name.replace('.apk', '').replace(/[_.-]/g, ' ');
-
-                    let item = document.createElement('div');
-                    item.className = 'list-item';
-                    item.innerHTML = `
-                        <div class="app-info">
-                            <span class="app-name">${cleanName}</span>
-                            <span class="app-size">${file.name} • ${sizeMb} MB</span>
-                        </div>
-                        <a href="${downloadUrl}" class="btn-download" download>Скачать</a>
-                    `;
-                    listView.appendChild(item);
-                });
-
-            } catch (error) {
-                listView.innerHTML = '<div class="loading" style="color: red;">Ошибка подключения к Internet Archive.</div>';
-                console.error(error);
-            }
+        // Конвертація SDK з AndroidManifest.xml у зрозумілу версію Android
+        function getAndroidVersionName(sdkInt) {
+            const versions = {
+                8: "Android 2.2 (Froyo)",
+                10: "Android 2.3 (Gingerbread)",
+                15: "Android 4.0 (ICS)",
+                16: "Android 4.1 (Jelly Bean)",
+                17: "Android 4.2 (Jelly Bean)",
+                18: "Android 4.3 (Jelly Bean)",
+                19: "Android 4.4 (KitKat)",
+                21: "Android 5.0 (Lollipop)",
+                22: "Android 5.1 (Lollipop)",
+                23: "Android 6.0 (Marshmallow)",
+                24: "Android 7.0 (Nougat)"
+            };
+            return versions[sdkInt] ? versions[sdkInt] + " (API " + sdkInt + ")" : "API " + sdkInt;
         }
 
-        loadArchiveList();
+        // Посилання на твою папку MEGA
+        const megaFolderUrl = "https://mega.nz/folder/zT4CiZ7Z#4oIb5biFboCXlcszOdeePg";
+
+        // База даних додатків (можеш легко доповнювати новими файлами з твоїх 171 APK)
+        const apps = [
+            { name: "ES Explorer", sdk: 10, size: "15 МБ" },
+            { name: "Opera Classic", sdk: 19, size: "12 МБ" },
+            { name: "Lucky Patcher", sdk: 15, size: "8 МБ" },
+            { name: "Kate Mobile", sdk: 15, size: "6 МБ" },
+            { name: "APKPure / Editor", sdk: 19, size: "14 МБ" }
+        ];
+
+        const container = document.getElementById('app-list');
+
+        // Рендеринг елементів у форматі ListView 1
+        apps.forEach(app => {
+            const androidVersion = getAndroidVersionName(app.sdk);
+            
+            const item = document.createElement('div');
+            item.className = 'app-item';
+            
+            item.innerHTML = `
+                <div class="app-info">
+                    <span class="app-name">${app.name}</span>
+                    <span class="app-details">${androidVersion} • ${app.size}</span>
+                </div>
+                <a href="${megaFolderUrl}" class="download-btn" target="_blank">Завантажити</a>
+            `;
+            
+            container.appendChild(item);
+        });
     </script>
 
 </body>
