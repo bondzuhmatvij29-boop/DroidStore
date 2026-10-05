@@ -1,0 +1,90 @@
+<html>
+<head>
+    <title>DroidStore - Регистрация</title>
+</head>
+<body bgcolor="#121212" text="#ffffff">
+
+    <table width="100%" border="0" cellpadding="10" cellspacing="0" bgcolor="#1f1f1f">
+        <tr>
+            <td align="left">
+                <font color="#4CAF50" size="5"><b>🤖 DroidStore</b></font>
+            </td>
+            <td align="right">
+                <a href="index.html"><font color="#4CAF50">Главная</font></a> | 
+                <a href="login.html"><font color="#4CAF50">Войти</font></a>
+            </td>
+        </tr>
+    </table>
+
+    <div align="center">
+        <h2>Регистрация аккаунта</h2>
+        
+        <table border="0" cellpadding="10" cellspacing="0" bgcolor="#1a1a1a" style="border: 1px solid #333; margin-top: 20px;">
+            <tr>
+                <td align="center">
+                    <form onsubmit="registerUser(event)">
+                        <table border="0" cellpadding="6" cellspacing="0">
+                            <tr>
+                                <td align="left"><font size="2">Имя пользователя:</font></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="regName" style="width: 220px; padding: 5px; background: #2a2a2a; color: #fff; border: 1px solid #444;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left"><font size="2">Gmail:</font></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="email" id="regEmail" placeholder="example@gmail.com" style="width: 220px; padding: 5px; background: #2a2a2a; color: #fff; border: 1px solid #444;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left"><font size="2">Пароль:</font></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="password" id="regPass" style="width: 220px; padding: 5px; background: #2a2a2a; color: #fff; border: 1px solid #444;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left"><font size="2">Подтверждение пароля:</font></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="password" id="regPassConfirm" style="width: 220px; padding: 5px; background: #2a2a2a; color: #fff; border: 1px solid #444;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top: 15px;">
+                                    <input type="submit" value="Зарегистрироваться" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold;">
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                    <p><font size="2" color="#aaa">Уже есть аккаунт? <a href="login.html"><font color="#4CAF50">Войти</font></a></font></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script language="JavaScript">
+        function registerUser(event) {
+            event.preventDefault();
+            
+            var name = document.getElementById('regName').value;
+            var email = document.getElementById('regEmail').value;
+            var pass = document.getElementById('regPass').value;
+            var passConfirm = document.getElementById('regPassConfirm').value;
+
+            if (pass !== passConfirm) {
+                alert("Пароли не совпадают!");
+                return;
+            }
+
+            var userId = 2;
+            var rank = "Новичок";
+            var color = "#aaaaaa";
+
+            if (name.toLowerCase() === "admin" || name.toLowerCase() === "вла
