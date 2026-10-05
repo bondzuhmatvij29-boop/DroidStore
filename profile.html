@@ -1,0 +1,113 @@
+<html>
+<head>
+    <title>DroidStore - Профиль</title>
+</head>
+<body bgcolor="#121212" text="#ffffff">
+
+    <table width="100%" border="0" cellpadding="10" cellspacing="0" bgcolor="#1f1f1f">
+        <tr>
+            <td align="left">
+                <font color="#4CAF50" size="5"><b>🤖 DroidStore</b></font>
+            </td>
+            <td align="right">
+                <a href="index.html"><font color="#4CAF50">Главная</font></a>
+            </td>
+        </tr>
+    </table>
+
+    <div align="center">
+        <h2>Профиль</h2>
+        
+        <table border="0" cellpadding="10" cellspacing="0" bgcolor="#1a1a1a" style="border: 1px solid #333; margin-top: 20px;">
+            <tr>
+                <td align="center">
+                    <div id="profileContent"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script language="JavaScript">
+        var user = null;
+        try {
+            if (typeof localStorage !== 'undefined') {
+                user = JSON.parse(localStorage.getItem('droidstore_user'));
+            }
+        } catch(e) {}
+
+        var content = document.getElementById('profileContent');
+
+        if (!user) {
+            content.innerHTML = '<font color="#ff5555">Вы не вошли в аккаунт.</font><br><br><a href="login.html"><font color="#4CAF50">Войти</font></a>';
+        } else {
+            if (!user.rank) {
+                user.rank = (user.id >= 1 && user.id <= 3) ? "Главный разработчик" : "Новичок";
+            }
+            if (!user.color) {
+                user.color = (user.id >= 1 && user.id <= 3) ? "#4CAF50" : "#aaaaaa";
+            }
+
+            var rankOptions = "";
+            if (user.id >= 1 && user.id <= 3) {
+                rankOptions = 
+                    '<select id="newRank" style="padding: 4px; background: #2a2a2a; color: #fff; border: 1px solid #444;">' +
+                    '<option value="Новичок|#aaaaaa">Новичок (Серый)</option>' +
+                    '<option value="Разработчик|#4CAF50">Разработчик (Зеленый)</option>' +
+                    '<option value="Элита|#FFEB3B">Элита (Желтый)</option>' +
+                    '<option value="Владелец|#2196F3">Владелец (Синий)</option>' +
+                    '</select><br><br>';
+            } else {
+                var canGreen = user.tiktokVerified ? '<option value="Проверенный|#4CAF50">Проверенный (Зеленый)</option>' : '';
+                rankOptions = 
+                    '<select id="newRank" style="padding: 4px; background: #2a2a2a; color: #fff; border: 1px solid #444;">' +
+                    '<option value="Новичок|#aaaaaa">Новичок (Серый)</option>' +
+                    canGreen +
+                    '</select><br><br>';
+            }
+
+            content.innerHTML = 
+                '<img src="' + (user.avatar || '') + '" width="80" height="80" style="border: 2px solid ' + user.color + ';"><br><br>' +
+                '<b>' + user.name + '</b><br>' +
+                '<font size="2" color="' + user.color + '">Статус: ' + user.rank + '</font><br><br>' +
+                '<font size="2">Аватар (до 3 МБ):</font><br>' +
+                '<input type="file" id="newAvatar" accept="image/*" style="margin-top: 5px;"><br><br>' +
+                '<font size="2">Выбрать статус:</font><br>' +
+                rankOptions +
+                '<input type="button" value="Сохранить" onclick="saveProfile()" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; cursor: pointer;">';
+        }
+
+        function saveProfile() {
+            var rankSelect = document.getElementById('newRank');
+            if (rankSelect) {
+                var parts = rankSelect.value.split('|');
+                user.rank = parts[0];
+                user.color = parts[1];
+            }
+
+            var fileInput = document.getElementById('newAvatar');
+            if (fileInput.files && fileInput.files[0]) {
+                var file = fileInput.files[0];
+                
+                if (file.size > 3 * 1024 * 1024) {
+                    alert("Файл больше 3 МБ");
+                    return;
+                }
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    user.avatar = e.target.result;
+                    localStorage.setItem('droidstore_user', JSON.stringify(user));
+                    alert("Сохранено");
+                    window.location.reload();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                localStorage.setItem('droidstore_user', JSON.stringify(user));
+                alert("Сохранено");
+                window.location.reload();
+            }
+        }
+    </script>
+
+</body>
+</html>
