@@ -23,37 +23,16 @@
         <br>
         <hr width="80%" color="#333">
         <h3>Каталог приложений</h3>
-        <p><font size="2" color="#aaa">Прямые ссылки на скачивание APK</font></p>
+        <p><font size="2" color="#aaa">Автоматическое обновление списка из хранилища</font></p>
 
-        <table border="0" cellpadding="8" cellspacing="0" width="85%" bgcolor="#1a1a1a" style="border: 1px solid #333;">
+        <table border="0" cellpadding="8" cellspacing="0" width="85%" bgcolor="#1a1a1a" style="border: 1px solid #333;" id="appsTable">
             <tr bgcolor="#222">
                 <td align="left"><font size="2"><b>Приложение</b></font></td>
-                <td align="center"><font size="2"><b>Версия</b></font></td>
+                <td align="center"><font size="2"><b>Размер</b></font></td>
                 <td align="center"><font size="2"><b>Скачать</b></font></td>
             </tr>
             <tr>
-                <td align="left">
-                    <font size="2"><b>MiniBrow</b></font><br>
-                    <font size="1" color="#aaa">Браузер для legacy Android</font>
-                </td>
-                <td align="center"><font size="2">v1.2</font></td>
-                <td align="center">
-                    <a href="https://eu-api.mega.co.nz/dl/zT4CiZ7Z/DIRECT_LINK_TO_MINIBROW.apk">
-                        <input type="button" value="Скачать" style="background: #4CAF50; color: white; border: none; padding: 4px 8px; cursor: pointer;">
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td align="left">
-                    <font size="2"><b>Android Market 2</b></font><br>
-                    <font size="1" color="#aaa">Клиент репозитория</font>
-                </td>
-                <td align="center"><font size="2">v1.0</font></td>
-                <td align="center">
-                    <a href="https://eu-api.mega.co.nz/dl/zT4CiZ7Z/DIRECT_LINK_TO_MARKET.apk">
-                        <input type="button" value="Скачать" style="background: #4CAF50; color: white; border: none; padding: 4px 8px; cursor: pointer;">
-                    </a>
-                </td>
+                <td colspan="3" align="center"><font size="2" color="#aaa">Загрузка списка...</font></td>
             </tr>
         </table>
     </div>
@@ -94,6 +73,37 @@
             } catch(e) {}
             window.location.reload();
         }
+
+        function loadApps() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "api/get_apps.php", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    try {
+                        var apps = JSON.parse(xhr.responseText);
+                        var table = document.getElementById('appsTable');
+                        var html = '<tr bgcolor="#222"><td align="left"><font size="2"><b>Приложение</b></font></td><td align="center"><font size="2"><b>Размер</b></font></td><td align="center"><font size="2"><b>Скачать</b></font></td></tr>';
+                        
+                        if (apps.length === 0) {
+                            html += '<tr><td colspan="3" align="center"><font size="2" color="#aaa">Нет доступных приложений</font></td></tr>';
+                        } else {
+                            for (var i = 0; i < apps.length; i++) {
+                                html += '<tr>' +
+                                    '<td align="left"><font size="2"><b>' + apps[i].name + '</b></font></td>' +
+                                    '<td align="center"><font size="2">' + apps[i].size + '</font></td>' +
+                                    '<td align="center"><a href="' + apps[i].url + '"><input type="button" value="Скачать" style="background: #4CAF50; color: white; border: none; padding: 4px 8px; cursor: pointer;"></a></td>' +
+                                    '</tr>';
+                            }
+                        }
+                        table.innerHTML = html;
+                    } catch(e) {}
+                }
+            };
+            xhr.send();
+        }
+
+        loadApps();
+        setInterval(loadApps, 60000);
     </script>
 
 </body>
