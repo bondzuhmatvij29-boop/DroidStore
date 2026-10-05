@@ -1,130 +1,99 @@
-<!DOCTYPE html>
-<html lang="uk">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroidStore</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 16px;
-        }
-        h1 {
-            text-align: center;
-            font-size: 22px;
-            color: #4CAF50;
-        }
-        .info-header {
-            text-align: center;
-            font-size: 13px;
-            color: #b0b0b0;
-            margin-bottom: 20px;
-        }
-        .list-view-1 {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .app-item {
-            background: #1e1e1e;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .app-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .app-name {
-            font-size: 16px;
-            font-weight: bold;
-            color: #ffffff;
-        }
-        .app-details {
-            font-size: 12px;
-            color: #b0b0b0;
-            margin-top: 4px;
-        }
-        .download-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 14px;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .download-btn:active {
-            background-color: #388E3C;
-        }
-    </style>
+    <title>DroidStore - Главная</title>
 </head>
-<body>
+<body bgcolor="#121212" text="#ffffff">
 
-    <h1>DroidStore</h1>
-    <div class="info-header">Легкий маркет додатків (обмеження до 35 МБ)</div>
+    <table width="100%" border="0" cellpadding="10" cellspacing="0" bgcolor="#1f1f1f">
+        <tr>
+            <td align="left">
+                <font color="#4CAF50" size="5"><b>🤖 DroidStore</b></font>
+            </td>
+            <td align="right" id="authCell">
+                <a href="login.html"><font color="#4CAF50">Войти</font></a> | 
+                <a href="reg.html"><font color="#4CAF50">Зарегистрироваться</font></a>
+            </td>
+        </tr>
+    </table>
 
-    <div class="list-view-1" id="app-list">
-        <!-- Список додатків завантажується динамічно -->
+    <div align="center">
+        <h2>Добро пожаловать в DroidStore!</h2>
+        <p>Каталог приложений для всех версий Android.</p>
+        
+        <br>
+        <hr width="80%" color="#333">
+        <h3>Каталог приложений</h3>
+        <p><font size="2" color="#aaa">Прямые ссылки на скачивание APK</font></p>
+
+        <table border="0" cellpadding="8" cellspacing="0" width="85%" bgcolor="#1a1a1a" style="border: 1px solid #333;">
+            <tr bgcolor="#222">
+                <td align="left"><font size="2"><b>Приложение</b></font></td>
+                <td align="center"><font size="2"><b>Версия</b></font></td>
+                <td align="center"><font size="2"><b>Скачать</b></font></td>
+            </tr>
+            <tr>
+                <td align="left">
+                    <font size="2"><b>MiniBrow</b></font><br>
+                    <font size="1" color="#aaa">Браузер для legacy Android</font>
+                </td>
+                <td align="center"><font size="2">v1.2</font></td>
+                <td align="center">
+                    <a href="https://eu-api.mega.co.nz/dl/zT4CiZ7Z/DIRECT_LINK_TO_MINIBROW.apk">
+                        <input type="button" value="Скачать" style="background: #4CAF50; color: white; border: none; padding: 4px 8px; cursor: pointer;">
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td align="left">
+                    <font size="2"><b>Android Market 2</b></font><br>
+                    <font size="1" color="#aaa">Клиент репозитория</font>
+                </td>
+                <td align="center"><font size="2">v1.0</font></td>
+                <td align="center">
+                    <a href="https://eu-api.mega.co.nz/dl/zT4CiZ7Z/DIRECT_LINK_TO_MARKET.apk">
+                        <input type="button" value="Скачать" style="background: #4CAF50; color: white; border: none; padding: 4px 8px; cursor: pointer;">
+                    </a>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <script>
-        // Конвертація SDK з AndroidManifest.xml у зрозумілу версію Android
-        function getAndroidVersionName(sdkInt) {
-            const versions = {
-                8: "Android 2.2 (Froyo)",
-                10: "Android 2.3 (Gingerbread)",
-                15: "Android 4.0 (ICS)",
-                16: "Android 4.1 (Jelly Bean)",
-                17: "Android 4.2 (Jelly Bean)",
-                18: "Android 4.3 (Jelly Bean)",
-                19: "Android 4.4 (KitKat)",
-                21: "Android 5.0 (Lollipop)",
-                22: "Android 5.1 (Lollipop)",
-                23: "Android 6.0 (Marshmallow)",
-                24: "Android 7.0 (Nougat)"
-            };
-            return versions[sdkInt] ? versions[sdkInt] + " (API " + sdkInt + ")" : "API " + sdkInt;
+    <script language="JavaScript">
+        var currentUser = null;
+        try {
+            if (typeof localStorage !== 'undefined') {
+                var userData = localStorage.getItem('droidstore_user');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                }
+            }
+        } catch(e) {}
+
+        var authCell = document.getElementById('authCell');
+
+        if (currentUser) {
+            var rank = currentUser.rank || (currentUser.id == 1 ? "Главный разработчик" : "Новичок");
+            var color = currentUser.color || (currentUser.id == 1 ? "#4CAF50" : "#aaaaaa");
+
+            authCell.innerHTML = '<table border="0" cellspacing="0" cellpadding="0"><tr>' +
+                '<td><a href="profile.html"><img src="' + (currentUser.avatar || '') + '" width="32" height="32" style="border: 2px solid ' + color + ';"></a></td>' +
+                '<td style="padding-left: 8px;" align="left">' +
+                '<a href="profile.html" style="text-decoration: none;"><font size="2" color="#ffffff"><b>' + currentUser.name + '</b></font></a><br>' +
+                '<font size="1" color="' + color + '">' + rank + '</font>' +
+                '</td>' +
+                '<td style="padding-left: 10px;"><a href="#" onclick="logout(); return false;"><font color="#ff5555">Выйти</font></a></td>' +
+                '</tr></table>';
+        } else {
+            authCell.innerHTML = '<a href="login.html"><font color="#4CAF50">Войти</font></a> | ' +
+                                 '<a href="reg.html"><font color="#4CAF50">Зарегистрироваться</font></a>';
         }
 
-        // Посилання на твою папку MEGA
-        const megaFolderUrl = "https://mega.nz/folder/zT4CiZ7Z#4oIb5biFboCXlcszOdeePg";
-
-        // База даних додатків (можеш легко доповнювати новими файлами з твоїх 171 APK)
-        const apps = [
-            { name: "ES Explorer", sdk: 10, size: "15 МБ" },
-            { name: "Opera Classic", sdk: 19, size: "12 МБ" },
-            { name: "Lucky Patcher", sdk: 15, size: "8 МБ" },
-            { name: "Kate Mobile", sdk: 15, size: "6 МБ" },
-            { name: "APKPure / Editor", sdk: 19, size: "14 МБ" }
-        ];
-
-        const container = document.getElementById('app-list');
-
-        // Рендеринг елементів у форматі ListView 1
-        apps.forEach(app => {
-            const androidVersion = getAndroidVersionName(app.sdk);
-            
-            const item = document.createElement('div');
-            item.className = 'app-item';
-            
-            item.innerHTML = `
-                <div class="app-info">
-                    <span class="app-name">${app.name}</span>
-                    <span class="app-details">${androidVersion} • ${app.size}</span>
-                </div>
-                <a href="${megaFolderUrl}" class="download-btn" target="_blank">Завантажити</a>
-            `;
-            
-            container.appendChild(item);
-        });
+        function logout() {
+            try {
+                localStorage.removeItem('droidstore_user');
+            } catch(e) {}
+            window.location.reload();
+        }
     </script>
 
 </body>
