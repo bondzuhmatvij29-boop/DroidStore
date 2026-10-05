@@ -1,0 +1,94 @@
+<html>
+<head>
+    <title>DroidStore - Вход</title>
+</head>
+<body bgcolor="#121212" text="#ffffff">
+
+    <table width="100%" border="0" cellpadding="10" cellspacing="0" bgcolor="#1f1f1f">
+        <tr>
+            <td align="left">
+                <font color="#4CAF50" size="5"><b>🤖 DroidStore</b></font>
+            </td>
+            <td align="right">
+                <a href="index.html"><font color="#4CAF50">Главная</font></a> | 
+                <a href="reg.html"><font color="#4CAF50">Регистрация</font></a>
+            </td>
+        </tr>
+    </table>
+
+    <div align="center">
+        <h2>Вход в аккаунт</h2>
+        
+        <table border="0" cellpadding="10" cellspacing="0" bgcolor="#1a1a1a" style="border: 1px solid #333; margin-top: 20px;">
+            <tr>
+                <td align="center">
+                    <form onsubmit="loginUser(event)">
+                        <table border="0" cellpadding="6" cellspacing="0">
+                            <tr>
+                                <td align="left"><font size="2">Имя пользователя:</font></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="loginName" style="width: 220px; padding: 5px; background: #2a2a2a; color: #fff; border: 1px solid #444;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left"><font size="2">Пароль:</font></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="password" id="loginPass" style="width: 220px; padding: 5px; background: #2a2a2a; color: #fff; border: 1px solid #444;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top: 15px;">
+                                    <input type="submit" value="Войти" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold;">
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                    <p><font size="2" color="#aaa">Нет аккаунта? <a href="reg.html"><font color="#4CAF50">Зарегистрироваться</font></a></font></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script language="JavaScript">
+        function loginUser(event) {
+            event.preventDefault();
+            
+            var name = document.getElementById('loginName').value;
+            
+            var userId = 2;
+            var rank = "Новичок";
+            var color = "#aaaaaa";
+            
+            if (name.toLowerCase() === "admin" || name.toLowerCase() === "владелец" || name.toLowerCase() === "main") {
+                userId = 1;
+                rank = "Главный разработчик";
+                color = "#4CAF50";
+            }
+
+            var userData = {
+                id: userId,
+                name: name,
+                avatar: "https://via.placeholder.com/32",
+                rank: rank,
+                color: color
+            };
+
+            try {
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem('droidstore_user', JSON.stringify(userData));
+                    window.location.href = "index.html";
+                } else {
+                    alert("Ошибка: localStorage не поддерживается.");
+                }
+            } catch(e) {
+                alert("Ошибка сохранения сессии.");
+            }
+        }
+    </script>
+
+</body>
+</html>
